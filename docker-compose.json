@@ -1,0 +1,70 @@
+{
+  "version": "2",
+  "services": {
+    "app1": {
+      "image": "node:6.4.0",
+      "restart": "always",
+      "command": [
+        "npm",
+        "start"
+      ],
+      "volumes": [
+        "./services/app/resources/app:/app"
+      ],
+      "working_dir": "/app",
+      "environment": {
+        "APPNUM": 1
+      }
+    },
+    "app2": {
+      "image": "node:6.4.0",
+      "restart": "always",
+      "command": [
+        "npm",
+        "start"
+      ],
+      "volumes": [
+        "./services/app/resources/app:/app"
+      ],
+      "working_dir": "/app",
+      "environment": {
+        "APPNUM": 2
+      }
+    },
+    "frontend-build": {
+      "image": "node:6.4.0",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "working_dir": "/app",
+      "volumes": [
+        "./services/frontend-app/resources/app:/app",
+        "frontend-app:/app/dist:rw"
+      ]
+    },
+    "frontend": {
+      "image": "nginx:1.11.5",
+      "restart": "always",
+      "volumes": [
+        "frontend-app:/usr/share/nginx/html:ro"
+      ]
+    },
+    "proxy": {
+      "image": "nginx:1.11.5",
+      "volumes": [
+          "./services/proxy/resources/conf.d:/etc/nginx/conf.d"
+      ],
+      "restart": "always",
+      "ports": [
+        "80:80",
+        "8080:8080",
+        "8081:8081"
+      ]
+    }
+  },
+  "volumes": {
+    "frontend-app": {}
+  }
+}
